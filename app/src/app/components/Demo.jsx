@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image"
 
 
 const Demo = () => {
@@ -83,12 +84,13 @@ const Demo = () => {
           className='relative flex justify-center items-center'
           onSubmit={handleSubmit}
         >
-          <img
+          <Image 
             src='/assets/link.svg'
             alt='link-icon'
             className='absolute left-0 my-2 ml-3 w-5'
+            width='24'
+            height='24'    
           />
-
           <input
             type='url'
             placeholder='Paste the article link'
@@ -115,10 +117,12 @@ const Demo = () => {
               className='link_card'
             >
               <div className='copy_btn' onClick={() => handleCopy(item.url)}>
-                <img
+                <Image
                   src={copied === item.url ? '/assets/ticket.svg' : '/assets/copy.svg'}
                   alt={copied === item.url ? "tick_icon" : "copy_icon"}
                   className='w-[40%] h-[40%] object-contain'
+                  width={14}
+                  height={14}
                 />
               </div>
               <p className='flex-1 font-satoshi text-blue-700 font-medium text-sm truncate'>
@@ -132,7 +136,7 @@ const Demo = () => {
       {/* Display Result */}
       <div className='my-10 max-w-full flex justify-center items-center'>
         {isFetching ? (
-          <img src="/assets/loader.svg" alt='loader' className='w-20 h-20 object-contain' />
+          <Image src="/assets/loader.svg" alt='loader' className='w-20 h-20 object-contain' width={200} height={200}/>
         ) : error ? (
           <p className='font-inter font-bold text-black text-center'>
             予想外の問題が発生されました...
