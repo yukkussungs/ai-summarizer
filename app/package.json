@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "chromium-download": "node ./src/app/api/summary/summarize/chromium-download.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.3.1",
