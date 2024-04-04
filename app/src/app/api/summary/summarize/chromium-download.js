@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+const puppeteer = require('puppeteer');
 
 async function downloadChromium() {
   const revision = await puppeteer.chromiumRevision();
