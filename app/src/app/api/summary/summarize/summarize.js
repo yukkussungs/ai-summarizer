@@ -1,45 +1,10 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
-import { PuppeteerWebBaseLoader } from "langchain/document_loaders/web/puppeteer";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
 
 const summarize = async (urlLink) => {
-  const loader = new PuppeteerWebBaseLoader(
-    urlLink,
-    {
-      launchOptions: {
-        headless: "new",
-        args: ["--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"],
-      },
-      gotoOptions: {
-        waitUntil: "domcontentloaded",
-      },
-      async evaluate(page) {
-        await page.setViewport({
-          width: 1920,
-          height: 1080,
-        });
-        const result = await page.evaluate(async () => {
-          // wait page load
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-
-          const spScripts = document.querySelectorAll("script[type='application/ld+json']");
-          // remove unnecessary elements
-          const pcScripts = document.body.querySelectorAll("script");
-          const noscript = document.body.querySelectorAll("noscript");
-          const styles = document.body.querySelectorAll("style");
-          const scriptAndStyle = [...spScripts, ...pcScripts, ...noscript, ...styles];
-          scriptAndStyle.forEach((e) => e.remove());
-
-          // collect text
-          const mainElement = document.querySelector("main");
-          const text = mainElement ? mainElement.innerText : document.body.innerText;
-          return text.slice(0, 20000);
-        });
-        return result;
-      },
-    }
-  );
+  const loader = new CheerioWebBaseLoader(urlLink);
 
   let docs;
   try {
@@ -50,10 +15,11 @@ const summarize = async (urlLink) => {
   }
   const model = new ChatGoogleGenerativeAI({
     apiKey: process.env.VITE_GEMINI_API_KEY,
-    temperature: 0.7,
+    temperature: 0,
     modelName: "gemini-pro",
     maxOutputTokens: 2048,
     safetySettings: [],
+    defaultLanguage: "ja",
   });
 
   const template = `コンテキスト内容を日本語で要約しますが、要約結果は次の形式で作成してください:
@@ -75,12 +41,14 @@ const summarize = async (urlLink) => {
     llm: model,
     prompt: questionAnsweringPrompt,
   });
-
   try {
     const res = await stuffChain.invoke({
       input: template,
       context: docs,
       keywords: [],
+      contextOptions: {
+        language: "ja", // 사이트 언어 정보 제공
+      },
     });
     return { summary: res.replace(/\*\*/g, '') };
   } catch (error) {

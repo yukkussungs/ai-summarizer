@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "chromium-download": "node ./src/app/api/summary/summarize/chromium-download.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "@google/generative-ai": "^0.3.1",
@@ -21,6 +20,7 @@
     "langchain": "^0.1.30",
     "next": "14.1.4",
     "puppeteer": "^19.11.1",
+    "puppeteer-core": "^22.6.2",
     "react": "^18",
     "react-dom": "^18"
   },
