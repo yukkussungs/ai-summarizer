@@ -20,6 +20,7 @@ const summarize = async (urlLink) => {
     maxOutputTokens: 2048,
     safetySettings: [],
     defaultLanguage: "ja",
+    timeout: 30000
   });
 
   const template = `コンテキスト内容を日本語で要約しますが、要約結果は次の形式で作成してください:
